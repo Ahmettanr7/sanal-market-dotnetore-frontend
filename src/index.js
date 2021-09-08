@@ -1,14 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import './App.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter } from 'react-router-dom';
+import { ToastProvider } from 'react-toast-notifications';
 
 ReactDOM.render(
+  <BrowserRouter>
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <ToastProvider placement="top-left"><App/></ToastProvider>
+</React.StrictMode>
+</BrowserRouter>,
+document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
