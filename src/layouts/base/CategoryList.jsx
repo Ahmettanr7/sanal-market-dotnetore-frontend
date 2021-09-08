@@ -48,14 +48,13 @@ export default function CategoryList() {
       <Button className="w-100 mb-2 mt-1" variant="outline">
         Kategoriler
       </Button>
-      {categories.map((category) => (
+      {categories.map((category,index) => (
         <a
           style={{ textDecorationLine: "none", textDecoration: "none" }}
           href={`/items/${category.id}`}
         >
-          <Container initial={{ x: -1000 }} animate={{ x: 0 }}>
+          <Container key={index} initial={{ x: -1000 }} animate={{ x: 0 }}>
             <CardBox
-              key={category.id}
               style={{ backgroundImage: `url("${category.imageUrl}")` }}
               variants={CardVariants}
               initial="beforeHover"

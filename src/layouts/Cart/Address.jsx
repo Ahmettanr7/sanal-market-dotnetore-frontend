@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Container, FloatingLabel } from "react-bootstrap";
 import AddressService from "../../services/AddressService";
 import { Formik, useFormik } from "formik";
-import * as Yup from "yup";
 import { useToasts } from "react-toast-notifications";
 import CartService from "../../services/CartService";
 import OrderService from "../../services/OrderService";
@@ -20,7 +19,7 @@ export default function Address() {
     let addressService = new AddressService();
     let cartService = new CartService();
     addressService
-      .getAddressByUserId(56)
+      .getAddressByUserId(1)
       .then((result) => setAddress(result.data.data));
 
     addressService
@@ -40,31 +39,21 @@ export default function Address() {
       .then((result) => setDistricts(result.data.data));
 
     cartService
-      .getTotalCartPrice(56)
+      .getTotalCartPrice(1)
       .then((result) => setTotalCartPrice(result.data.data));
   }, [totalCartPrice]);
-
-  const NewAddressAddSchema = Yup.object().shape({
-    countryId: Yup.string().required("Ülke seçimi zorunludur"),
-    cityId: Yup.string().required("Şehir seçimi zorunludur"),
-    townId: Yup.string().required("İlçe seçimi zorunludur"),
-    districtId: Yup.string().required("Mahalle seçimi zorunludur"),
-    postalCode: Yup.string().required("Posta kodu zorunludur"),
-    addressText: Yup.string().required("Adres açıklaması zorunludur"),
-  });
 
   let addressService = new AddressService();
   const formik = useFormik({
     initialValues: {
-      userId: "56",
-      countryId: "1",
-      cityId: "42",
-      townId: "732",
-      districtId: "22147",
+      userId: 1,
+      countryId: 1,
+      cityId: 42,
+      townId: 732,
+      districtId: 22147,
       postalCode: "",
       addressText: "",
     },
-    validationSchema: NewAddressAddSchema,
     onSubmit: (values) => {
       addressService.addAddress(values).then((result) =>
         addToast(result.data.message, {
@@ -84,13 +73,11 @@ export default function Address() {
   let orderService = new OrderService();
   const formik3 = useFormik({
     initialValues: {
-      userId: "56",
+      userId: 1,
       addressId: "",
     },
     onSubmit: (values) => {
       values.addressId = formik2.values.id;
-      console.log(values);
-
       orderService.add(values).then((result) =>
         addToast(result.data.message, {
           appearance: result.data.success ? "success" : "error",
@@ -100,8 +87,6 @@ export default function Address() {
           window.location.assign("/")
         )
       );
-
-      
     },
   });
 
@@ -137,7 +122,7 @@ export default function Address() {
           >
             <Form.Select
               onChange={formik2.handleChange}
-              onBlur={formik2.onBlur}
+              onBlur={formik2.handleBlur}
               id="id"
               value={formik2.values.id}
             >
@@ -159,58 +144,58 @@ export default function Address() {
 
           <Form.Select
             onChange={formik.handleChange}
-            onBlur={formik.onBlur}
+            onBlur={formik.handleBlur}
             id="countryId"
             value={formik.values.countryId}
           >
             {countries.map((country, index) => (
               <option value={country.id} key={index}>
-                {country.country}
+                {country.countryName}
               </option>
             ))}
           </Form.Select>
           <Form.Label>Şehir</Form.Label>
           <Form.Select
             onChange={formik.handleChange}
-            onBlur={formik.onBlur}
+            onBlur={formik.handleBlur}
             id="cityId"
             value={formik.values.cityId}
           >
             {cities.map((city, index) => (
               <option value={city.id} key={index}>
-                {city.city}
+                {city.cityName}
               </option>
             ))}
           </Form.Select>
           <Form.Label>İlçe</Form.Label>
           <Form.Select
             onChange={formik.handleChange}
-            onBlur={formik.onBlur}
+            onBlur={formik.handleBlur}
             id="townId"
             value={formik.values.townId}
           >
             {towns.map((town, index) => (
               <option value={town.id} key={index}>
-                {town.town}
+                {town.townName}
               </option>
             ))}
           </Form.Select>
           <Form.Label>Mahalle</Form.Label>
           <Form.Select
             onChange={formik.handleChange}
-            onBlur={formik.onBlur}
+            onBlur={formik.handleBlur}
             id="districtId"
             value={formik.values.districtId}
           >
             {districts.map((district, index) => (
               <option value={district.id} key={index}>
-                {district.district}
+                {district.districtName}
               </option>
             ))}
           </Form.Select>
           <Form.Group
             onChange={formik.handleChange}
-            onBlur={formik.onBlur}
+            onBlur={formik.handleBlur}
             value={formik.values.postalCode}
             className="mb-3"
           >
@@ -223,7 +208,7 @@ export default function Address() {
           </Form.Group>
           <Form.Group
             onChange={formik.handleChange}
-            onBlur={formik.onBlur}
+            onBlur={formik.handleBlur}
             value={formik.values.addressText}
             className="mb-3"
           >

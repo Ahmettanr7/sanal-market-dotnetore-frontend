@@ -34,6 +34,7 @@ export default function ItemAdd(){
           autoDismiss: false,
         })
       );
+      console.log(values);
     },
   });
   
@@ -66,7 +67,7 @@ export default function ItemAdd(){
             >
               <Form.Group
                 onChange={formik.handleChange}
-                onBlur={formik.onBlur}
+                onBlur={formik.handleBlur}
                 value={formik.values.itemCode}
                 className="mb-3"
               >
@@ -79,7 +80,7 @@ export default function ItemAdd(){
               </Form.Group>
               <Form.Group
                 onChange={formik.handleChange}
-                onBlur={formik.onBlur}
+                onBlur={formik.handleBlur}
                 value={formik.values.itemName}
                 className="mb-3"
               >
@@ -92,7 +93,7 @@ export default function ItemAdd(){
               </Form.Group>
               <Form.Group
                 onChange={formik.handleChange}
-                onBlur={formik.onBlur}
+                onBlur={formik.handleBlur}
                 value={formik.values.unitPrice}
                 className="mb-3"
               >
@@ -108,7 +109,7 @@ export default function ItemAdd(){
               <FloatingLabel label="Ürünün Temel Kategorisini Seçiniz">
                 <Form.Select
                   onChange={formik.handleChange}
-                  onBlur={formik.onBlur}
+                  onBlur={formik.handleBlur}
                   id="category1"
                   value={formik.values.category1}
                 >
@@ -122,7 +123,7 @@ export default function ItemAdd(){
               </FloatingLabel>
               <Form.Group
                 onChange={formik.handleChange}
-                onBlur={formik.onBlur}
+                onBlur={formik.handleBlur}
                 value={formik.values.category2}
                 className="mb-3"
               >
@@ -135,7 +136,7 @@ export default function ItemAdd(){
               </Form.Group>
               <Form.Group
                 onChange={formik.handleChange}
-                onBlur={formik.onBlur}
+                onBlur={formik.handleBlur}
                 value={formik.values.category3}
                 className="mb-3"
               >
@@ -148,7 +149,7 @@ export default function ItemAdd(){
               </Form.Group>
               <Form.Group
                 onChange={formik.handleChange}
-                onBlur={formik.onBlur}
+                onBlur={formik.handleBlur}
                 value={formik.values.category4}
                 className="mb-3"
               >
@@ -161,7 +162,7 @@ export default function ItemAdd(){
               </Form.Group>
               <Form.Group
                 onChange={formik.handleChange}
-                onBlur={formik.onBlur}
+                onBlur={formik.handleBlur}
                 value={formik.values.brand}
                 className="mb-3"
               >
@@ -186,7 +187,7 @@ export default function ItemAdd(){
             >
               <Form.Group
                 onChange={formik2.handleChange}
-                onBlur={formik2.onBlur}
+                onBlur={formik2.handleBlur}
                 value={formik2.values.itemId}
                 className="mb-3"
               >
@@ -209,7 +210,7 @@ export default function ItemAdd(){
                     let myFiles =Array.from(files);
                     formik2.setFieldValue("multipartFile", myFiles);
                   }}
-                onBlur={formik2.onBlur}
+                onBlur={formik2.handleBlur}
                 value={formik2.values.multipartFile}
                 className="mb-3"
               >

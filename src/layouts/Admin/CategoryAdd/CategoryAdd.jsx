@@ -32,7 +32,7 @@ export default function CategoryAdd() {
         >
           <Form.Group
             onChange={formik.handleChange}
-            onBlur={formik.onBlur}
+            onBlur={formik.handleBlur}
             value={formik.values.categoryName}
             className="mb-3"
           >
@@ -45,7 +45,7 @@ export default function CategoryAdd() {
           </Form.Group>
           <Form.Group
             onChange={formik.handleChange}
-            onBlur={formik.onBlur}
+            onBlur={formik.handleBlur}
             value={formik.values.imageUrl}
             className="mb-3"
           >

@@ -54,7 +54,7 @@ export default function ItemSearchList() {
   let addToCart = (itemId) => {
     let cartService = new CartService();
     const values = {
-      userId: 56,
+      userId: 1,
       itemId: itemId,
       count: count,
     };
@@ -73,9 +73,9 @@ export default function ItemSearchList() {
         <Breadcrumb.Item active>{itemName}</Breadcrumb.Item>
       </Breadcrumb>
       <Container initial={{ y: -700 }} animate={{ y: 0 }}>
-        {items.map((item) => (
+        {items.map((item,index) => (
           <Card
-            key={item.id}
+            key={index}
             style={{
               width: "18rem",
               display: "inline-block",

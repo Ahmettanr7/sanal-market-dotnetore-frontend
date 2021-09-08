@@ -12,13 +12,16 @@ export default function CartDetail() {
   useEffect(() => {
     let cartService = new CartService();
     cartService
-      .getByUserIdAndCartStatusIsTrue(56)
-      .then((result) => setCartItems(result.data.data));
-
-    cartService
-      .getTotalCartPrice(56)
+      .getTotalCartPrice(1)
       .then((result) => setTotalCartPrice(result.data.data));
   }, [totalCartPrice]);
+  
+  useEffect(() => {
+    let cartService = new CartService();
+    cartService
+      .getByUserIdAndCartStatusIsTrue(1)
+      .then((result) => setCartItems(result.data.data));
+  }, [cartItems]);
 
   let delete_ = (id) => {
     let cartService = new CartService();
@@ -32,7 +35,7 @@ export default function CartDetail() {
 
   let decreaseAd = (itemId) => {
     let cartService = new CartService();
-    cartService.decreaseAd(56, itemId).then((result) => {
+    cartService.decreaseAd(1, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -42,7 +45,7 @@ export default function CartDetail() {
 
   let increaseAd = (itemId) => {
     let cartService = new CartService();
-    cartService.increaseAd(56, itemId).then((result) => {
+    cartService.increaseAd(1, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -52,7 +55,7 @@ export default function CartDetail() {
 
   let decreaseKg = (itemId) => {
     let cartService = new CartService();
-    cartService.decreaseKg(56, itemId).then((result) => {
+    cartService.decreaseKg(1, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -62,7 +65,7 @@ export default function CartDetail() {
 
   let increaseKg = (itemId) => {
     let cartService = new CartService();
-    cartService.increaseKg(56, itemId).then((result) => {
+    cartService.increaseKg(1, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -91,10 +94,10 @@ export default function CartDetail() {
                       <Buttonn onClick={() => delete_(cart.id)}>x</Buttonn>
                     </div>
                     <div className="d-flex justify-content-center">
-                      {cart.item.imageUrl ? (
+                      {cart.imageUrl ? (
                         <Image
                           style={{ height: "50px" }}
-                          src={cart.item.imageUrl}
+                          src={cart.imageUrl}
                         />
                       ) : (
                         <Image
@@ -104,53 +107,53 @@ export default function CartDetail() {
                       )}
                     </div>
                     <div className="d-flex justify-content-center">
-                      {cart.item.itemName}
+                      {cart.itemName}
                     </div>
                     <div className="d-flex justify-content-center">
                       <span style={{ fontSize: "small", width: "100%" }}>
                         Birim Fiyatı :{" "}
                         <span>
-                          <b>{roll(cart.item.unitPrice, 2)} ₺</b>
+                          <b>{roll(cart.unitPrice, 2)} ₺</b>
                         </span>
                       </span>
                       <AddRemove>
                         <FlexContainer style={{ justifyContent: "center" }}>
                           <Flex className="border">
-                            {cart.item.category1 === 2 ||
-                            cart.item.category1 === 6 ||
-                            cart.item.category1 === 12 ||
-                            cart.item.category1 === 18 ? (
+                            {cart.category1 === 2 ||
+                            cart.category1 === 6 ||
+                            cart.category1 === 12 ||
+                            cart.category1 === 18 ? (
                               <Buttonn
-                                onClick={() => decreaseKg(cart.item.id)}
+                                onClick={() => decreaseKg(cart.itemId)}
                                 disabled={cart.count === 1}
                               >
                                 -
                               </Buttonn>
                             ) : (
                               <Buttonn
-                                onClick={() => decreaseAd(cart.item.id)}
+                                onClick={() => decreaseAd(cart.itemId)}
                                 disabled={cart.count === 1}
                               >
                                 -
                               </Buttonn>
                             )}
-                            {cart.item.category1 === 2 ||
-                            cart.item.category1 === 6 ||
-                            cart.item.category1 === 12 ||
-                            cart.item.category1 === 18 ? (
+                            {cart.category1 === 2 ||
+                            cart.category1 === 6 ||
+                            cart.category1 === 12 ||
+                            cart.category1 === 18 ? (
                               <Buttonn>{cart.count} Kilo</Buttonn>
                             ) : (
                               <Buttonn>{cart.count} Adet</Buttonn>
                             )}
-                            {cart.item.category1 === 2 ||
-                            cart.item.category1 === 6 ||
-                            cart.item.category1 === 12 ||
-                            cart.item.category1 === 18 ? (
-                              <Buttonn onClick={() => increaseKg(cart.item.id)}>
+                            {cart.category1 === 2 ||
+                            cart.category1 === 6 ||
+                            cart.category1 === 12 ||
+                            cart.category1 === 18 ? (
+                              <Buttonn onClick={() => increaseKg(cart.itemId)}>
                                 +
                               </Buttonn>
                             ) : (
-                              <Buttonn onClick={() => increaseAd(cart.item.id)}>
+                              <Buttonn onClick={() => increaseAd(cart.itemId)}>
                                 +
                               </Buttonn>
                             )}

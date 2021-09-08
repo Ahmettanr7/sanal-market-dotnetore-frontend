@@ -25,6 +25,7 @@ import { NavLink, useHistory } from "react-router-dom";
 import SignedIn from "./SignedIn";
 import SignOut from "./SignOut";
 import { useToasts } from "react-toast-notifications";
+import ItemService from "../../services/ItemService";
 
 export default function Navi() {
   const { addToast } = useToasts();
@@ -34,14 +35,14 @@ export default function Navi() {
   useEffect(() => {
     let cartService = new CartService();
       cartService
-      .getTotalCartPrice(56)
+      .getTotalCartPrice(1)
       .then((result) => setTotalCartPrice(result.data.data));
   }, [totalCartPrice]);
   
   useEffect(() => {
     let cartService = new CartService();
     cartService
-      .getByUserIdAndCartStatusIsTrue(56)
+      .getByUserIdAndCartStatusIsTrue(1)
       .then((result) => setCartItems(result.data.data));
   }, [cartItems]);
 
@@ -70,7 +71,7 @@ export default function Navi() {
 
   let decreaseAd = (itemId) => {
     let cartService = new CartService();
-    cartService.decreaseAd(56, itemId).then((result) => {
+    cartService.decreaseAd(1, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -80,7 +81,7 @@ export default function Navi() {
 
   let increaseAd = (itemId) => {
     let cartService = new CartService();
-    cartService.increaseAd(56, itemId).then((result) => {
+    cartService.increaseAd(1, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -90,7 +91,7 @@ export default function Navi() {
 
   let decreaseKg = (itemId) => {
     let cartService = new CartService();
-    cartService.decreaseKg(56, itemId).then((result) => {
+    cartService.decreaseKg(1, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -100,7 +101,7 @@ export default function Navi() {
 
   let increaseKg = (itemId) => {
     let cartService = new CartService();
-    cartService.increaseKg(56, itemId).then((result) => {
+    cartService.increaseKg(1, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -200,18 +201,18 @@ export default function Navi() {
                 <Offcanvas.Body>
                   {totalCartPrice ? (
                     <ListGroup>
-                      {cartItems.map((cart) => (
-                        <ListGroup.Item action key={cart.id}>
+                      {cartItems.map((cart, index) => (
+                        <ListGroup.Item action key={index}>
                           <div className="d-flex justify-content-end">
                             <Buttonn onClick={() => delete_(cart.id)}>
                               x
                             </Buttonn>
                           </div>
                           <div className="d-flex justify-content-center">
-                            {cart.item.imageUrl ? (
+                            {cart.imageUrl ? (
                               <Image
                                 style={{ height: "50px" }}
-                                src={cart.item.imageUrl}
+                                src={cart.imageUrl}
                               />
                             ) : (
                               <Image
@@ -221,56 +222,56 @@ export default function Navi() {
                             )}
                           </div>
                           <div className="d-flex justify-content-center">
-                            {cart.item.itemName}
+                            {cart.itemName}
                           </div>
                           <div className="d-flex justify-content-center">
                             <span style={{ fontSize: "small", width: "100%" }}>
                               Birim Fiyatı :{" "}
                               <span>
-                                <b>{roll(cart.item.unitPrice, 2)} ₺</b>
+                                <b>{roll(cart.unitPrice, 2)} ₺</b>
                               </span>
                             </span>
                             <AddRemove>
                               <FlexContainer>
                                 <Flex className="border">
-                                  {cart.item.category1 === 2 ||
-                                  cart.item.category1 === 6 ||
-                                  cart.item.category1 === 12 ||
-                                  cart.item.category1 === 18 ? (
+                                  {cart.category1 === 2 ||
+                                  cart.category1 === 6 ||
+                                  cart.category1 === 12 ||
+                                  cart.category1 === 18 ? (
                                     <Buttonn
-                                      onClick={() => decreaseKg(cart.item.id)}
+                                      onClick={() => decreaseKg(cart.itemId)}
                                       disabled={cart.count === 1}
                                     >
                                       -
                                     </Buttonn>
                                   ) : (
                                     <Buttonn
-                                      onClick={() => decreaseAd(cart.item.id)}
+                                      onClick={() => decreaseAd(cart.itemId)}
                                       disabled={cart.count === 1}
                                     >
                                       -
                                     </Buttonn>
                                   )}
-                                  {cart.item.category1 === 2 ||
-                                  cart.item.category1 === 6 ||
-                                  cart.item.category1 === 12 ||
-                                  cart.item.category1 === 18 ? (
+                                  {cart.category1 === 2 ||
+                                  cart.category1 === 6 ||
+                                  cart.category1 === 12 ||
+                                  cart.category1 === 18 ? (
                                     <Buttonn>{cart.count} Kilo</Buttonn>
                                   ) : (
                                     <Buttonn>{cart.count} Adet</Buttonn>
                                   )}
-                                  {cart.item.category1 === 2 ||
-                                  cart.item.category1 === 6 ||
-                                  cart.item.category1 === 12 ||
-                                  cart.item.category1 === 18 ? (
+                                  {cart.category1 === 2 ||
+                                  cart.category1 === 6 ||
+                                  cart.category1 === 12 ||
+                                  cart.category1 === 18 ? (
                                     <Buttonn
-                                      onClick={() => increaseKg(cart.item.id)}
+                                      onClick={() => increaseKg(cart.itemId)}
                                     >
                                       +
                                     </Buttonn>
                                   ) : (
                                     <Buttonn
-                                      onClick={() => increaseAd(cart.item.id)}
+                                      onClick={() => increaseAd(cart.itemId)}
                                     >
                                       +
                                     </Buttonn>
@@ -302,13 +303,20 @@ export default function Navi() {
                       </span>
                     </div>
                   )}
-                  {totalCartPrice && (
+                  {totalCartPrice?.totalCartPrice < 49.99 ? (
                     <div className="d-flex justify-content-center">
+                    <span className="text-muted">Minimum sepet tutarı <span className="text-purple">50 ₺</span>'dir. <br/> Sipariş verebilmek için sepetinize <span className="text-purple"> {roll(50-totalCartPrice?.totalCartPrice, 2)} ₺ </span> lik daha ürün eklemeniz gerekmektedir</span> 
+                    </div>
+                  )
+                :
+                (
+                  <div className="d-flex justify-content-center">
                       <Button as={NavLink} to="/cart" onClick={handleClose}>
                         Alışverişi Tamamla
                       </Button>
                     </div>
-                  )}
+                )
+                }
                 </Offcanvas.Body>
               </Offcanvas>
             </Nav.Item>

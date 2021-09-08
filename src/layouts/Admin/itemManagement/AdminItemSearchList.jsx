@@ -165,7 +165,7 @@ export default function AdminItemSearchList() {
                 <Form onSubmit={formik2.handleSubmit}>
                   <Form.Group
                    onChange={formik2.handleChange}
-                    onBlur={formik2.onBlur}
+                    onBlur={formik2.handleBlur}
                     value={formik2.values.itemId}
                     className="mb-3"
                   >
@@ -182,7 +182,7 @@ export default function AdminItemSearchList() {
                       let myFiles = Array.from(files);
                       formik2.setFieldValue("multipartFile", myFiles);
                     }}
-                    onBlur={formik2.onBlur}
+                    onBlur={formik2.handleBlur}
                     value={formik2.values.multipartFile}
                     className="mb-3"
                   >

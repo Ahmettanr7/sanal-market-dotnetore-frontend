@@ -63,7 +63,7 @@ export default function ItemList() {
   let addToCart = (itemId) => {
     let cartService = new CartService();
     const values = {
-      userId: 56,
+      userId: 1,
       itemId: itemId,
       count: count,
     };
