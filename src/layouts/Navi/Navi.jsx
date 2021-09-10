@@ -303,7 +303,8 @@ export default function Navi() {
                       </span>
                     </div>
                   )}
-                  {totalCartPrice?.totalCartPrice < 49.99 ? (
+                  {totalCartPrice &&
+                  (totalCartPrice?.totalCartPrice < 49.99 ? (
                     <div className="d-flex justify-content-center">
                     <span className="text-muted">Minimum sepet tutarı <span className="text-purple">50 ₺</span>'dir. <br/> Sipariş verebilmek için sepetinize <span className="text-purple"> {roll(50-totalCartPrice?.totalCartPrice, 2)} ₺ </span> lik daha ürün eklemeniz gerekmektedir</span> 
                     </div>
@@ -316,7 +317,8 @@ export default function Navi() {
                       </Button>
                     </div>
                 )
-                }
+                  )
+              }
                 </Offcanvas.Body>
               </Offcanvas>
             </Nav.Item>

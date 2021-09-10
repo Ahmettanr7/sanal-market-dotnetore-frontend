@@ -4,14 +4,14 @@ import { useParams } from 'react-router-dom';
 import OrderDetailService from "../../../../services/OrderDetailService"
 
 export default function OrderDetails() {
-    let { id } = useParams();
+    let { orderId } = useParams();
 
     const [orderDetail, setOrderDetail] = useState([]);
   
     useEffect(() => {
         let orderDetailService = new OrderDetailService();
         orderDetailService
-        .getByOrderId(id)
+        .getByOrderId(orderId)
         .then((result) => setOrderDetail(result.data.data));
     }, []);
 
@@ -19,7 +19,7 @@ export default function OrderDetails() {
         <div>
             <Table
             style={{marginTop:"50px"}}
-            striped bordered hover variant="dark">
+            striped bordered hover variant="light">
   <thead>
     <tr>
       <th>Ürün Id</th>
@@ -33,11 +33,11 @@ export default function OrderDetails() {
   <tbody>
   {orderDetail.map((order, index) => (
     <tr key={index}>
-      <td>{order.orderId}</td>
-      <td>{order.item.itemCode}</td>
-      <td>{order.item.brand}</td>
-      <td>{order.item.itemName}</td>
-      <td>{order.item.unitPrice}</td>
+      <td>{order.itemId}</td>
+      <td>{order.itemCode}</td>
+      <td>{order.brand}</td>
+      <td>{order.itemName}</td>
+      <td>{order.unitPrice}</td>
       <td>{order.count}</td>
     </tr>
   ))}

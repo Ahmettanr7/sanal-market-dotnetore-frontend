@@ -78,8 +78,8 @@ export default function AdminItemSearchList() {
               display: "inline-block",
               margin: "20px",
               padding: "10px",
-              height: "650px",
-              maxHeight: "650px",
+              height: "500px",
+              maxHeight: "500px",
               width: "200px",
               maxWidth: "200px",
             }}
@@ -124,43 +124,6 @@ export default function AdminItemSearchList() {
                   {roll(item.unitPrice + item.unitPrice * 0.15, 2)} ₺
                 </span>
               </Card.Title>
-
-              <Card.Text
-                style={{
-                  height: "20px",
-                  overflow: "hidden",
-                  fontSize: "medium",
-                }}
-              >
-                {item.category.categoryName}
-              </Card.Text>
-              <Card.Text
-                style={{
-                  height: "20px",
-                  overflow: "hidden",
-                  fontSize: "medium",
-                }}
-              >
-                {item.category2}
-              </Card.Text>
-              <Card.Text
-                style={{
-                  height: "20px",
-                  overflow: "hidden",
-                  fontSize: "medium",
-                }}
-              >
-                {item.category3}
-              </Card.Text>
-              <Card.Text
-                style={{
-                  height: "20px",
-                  overflow: "hidden",
-                  fontSize: "medium",
-                }}
-              >
-                {item.category4}
-              </Card.Text>
               <Formik>
                 <Form onSubmit={formik2.handleSubmit}>
                   <Form.Group

@@ -15,7 +15,7 @@ export default function AdminPage() {
   return (
     <div>
       <Row>
-        <Col sm={3}>
+        <Col sm={"3"}>
             
           <AdminNavi
             li={[
@@ -52,7 +52,7 @@ export default function AdminPage() {
             ]}
           />
         </Col>
-        <Col sm={8}>
+        <Col  sm={"8"}>
         <Route exact path="/admin/itemAdd" component={ItemAdd} />
         <Route exact path="/admin/itemManagement" component={ItemNameSearch} />
         <Route exact path="/admin/itemManagement/:itemName" component={ItemNameSearch} />
@@ -61,7 +61,7 @@ export default function AdminPage() {
         <Route exact path="/admin/categoryManagement" component={CategoryManagement} />
         <Route exact path="/admin/deliveredFalse" component={DeliveredIsFalse} />
         <Route exact path="/admin/deliveredTrue" component={DeliveredIsTrue} />
-        <Route exact path="/admin/deliveredFalse/:id" component={OrderDetails} />
+        <Route exact path="/admin/deliveredFalse/:orderId" component={OrderDetails} />
         </Col>
       </Row>
     </div>

@@ -74,10 +74,10 @@ export default function Address() {
   const formik3 = useFormik({
     initialValues: {
       userId: 1,
-      addressId: "",
+      addressId: 3,
     },
     onSubmit: (values) => {
-      values.addressId = formik2.values.id;
+      // values.addressId = formik2.values.id;
       orderService.add(values).then((result) =>
         addToast(result.data.message, {
           appearance: result.data.success ? "success" : "error",

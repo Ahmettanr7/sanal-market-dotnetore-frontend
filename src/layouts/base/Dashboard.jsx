@@ -32,7 +32,7 @@ export default function Dashboard() {
       <Route exact path="/admin/itemManagement/:itemName" component={AdminPage}/>
       <Route exact path="/admin/deliveredFalse" component={AdminPage} />
       <Route exact path="/admin/deliveredTrue" component={AdminPage} />
-      <Route exact path="/admin/deliveredFalse/:id" component={AdminPage} />
+      <Route exact path="/admin/deliveredFalse/:orderId" component={AdminPage} />
 
       <Route exact path="/items/:id" component={ItemListPage} />
       <Route exact path="/search/:itemName" component={ItemListPage} />
