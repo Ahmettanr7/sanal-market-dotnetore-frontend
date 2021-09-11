@@ -5,6 +5,8 @@ import { Formik, useFormik } from "formik";
 import { useToasts } from "react-toast-notifications";
 import CartService from "../../services/CartService";
 import OrderService from "../../services/OrderService";
+import UserService from "../../services/UserService";
+import LocalStorageService from "../../services/LocalStorageService";
 
 export default function Address() {
   const { addToast } = useToasts();
@@ -14,12 +16,21 @@ export default function Address() {
   const [towns, setTowns] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [totalCartPrice, setTotalCartPrice] = useState([]);
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    let userService = new UserService();
+    let localStorageService = new LocalStorageService();
+    userService
+      .getByEmail(localStorageService.get("email"))
+      .then((result) => setUser(result.data.data));
+  }, {user});
 
   useEffect(() => {
     let addressService = new AddressService();
     let cartService = new CartService();
     addressService
-      .getAddressByUserId(1)
+      .getAddressByUserId(user.id)
       .then((result) => setAddress(result.data.data));
 
     addressService
@@ -39,14 +50,14 @@ export default function Address() {
       .then((result) => setDistricts(result.data.data));
 
     cartService
-      .getTotalCartPrice(1)
+      .getTotalCartPrice(user.id)
       .then((result) => setTotalCartPrice(result.data.data));
   }, [totalCartPrice]);
 
   let addressService = new AddressService();
   const formik = useFormik({
     initialValues: {
-      userId: 1,
+      userId: "",
       countryId: 1,
       cityId: 42,
       townId: 732,
@@ -55,6 +66,7 @@ export default function Address() {
       addressText: "",
     },
     onSubmit: (values) => {
+      values.userId = user.id;
       addressService.addAddress(values).then((result) =>
         addToast(result.data.message, {
           appearance: result.data.success ? "success" : "error",
@@ -73,11 +85,11 @@ export default function Address() {
   let orderService = new OrderService();
   const formik3 = useFormik({
     initialValues: {
-      userId: 1,
-      addressId: 3,
+      userId: user.id,
+      addressId: "",
     },
     onSubmit: (values) => {
-      // values.addressId = formik2.values.id;
+      values.addressId = formik2.values.id;
       orderService.add(values).then((result) =>
         addToast(result.data.message, {
           appearance: result.data.success ? "success" : "error",

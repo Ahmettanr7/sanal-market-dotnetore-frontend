@@ -3,25 +3,36 @@ import { Button, ListGroup, Image } from "react-bootstrap";
 import CartService from "../../services/CartService";
 import { Buttonn, AddRemove, FlexContainer, Flex } from "../../Styles";
 import { useToasts } from "react-toast-notifications";
+import UserService from "../../services/UserService";
+import LocalStorageService from "../../services/LocalStorageService";
 
 export default function CartDetail() {
   const { addToast } = useToasts();
   const [cartItems, setCartItems] = useState([]);
   const [totalCartPrice, setTotalCartPrice] = useState([]);
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    let userService = new UserService();
+    let localStorageService = new LocalStorageService();
+    userService
+      .getByEmail(localStorageService.get("email"))
+      .then((result) => setUser(result.data.data));
+  }, {user});
 
   useEffect(() => {
     let cartService = new CartService();
     cartService
-      .getTotalCartPrice(1)
+      .getTotalCartPrice(user.id)
       .then((result) => setTotalCartPrice(result.data.data));
-  }, [totalCartPrice]);
+  }, [user,totalCartPrice]);
   
   useEffect(() => {
     let cartService = new CartService();
     cartService
-      .getByUserIdAndCartStatusIsTrue(1)
+      .getByUserIdAndCartStatusIsTrue(user.id)
       .then((result) => setCartItems(result.data.data));
-  }, [cartItems]);
+  }, [user,cartItems]);
 
   let delete_ = (id) => {
     let cartService = new CartService();
@@ -35,7 +46,7 @@ export default function CartDetail() {
 
   let decreaseAd = (itemId) => {
     let cartService = new CartService();
-    cartService.decreaseAd(1, itemId).then((result) => {
+    cartService.decreaseAd(user.id, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -45,7 +56,7 @@ export default function CartDetail() {
 
   let increaseAd = (itemId) => {
     let cartService = new CartService();
-    cartService.increaseAd(1, itemId).then((result) => {
+    cartService.increaseAd(user.id, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -55,7 +66,7 @@ export default function CartDetail() {
 
   let decreaseKg = (itemId) => {
     let cartService = new CartService();
-    cartService.decreaseKg(1, itemId).then((result) => {
+    cartService.decreaseKg(user.id, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -65,7 +76,7 @@ export default function CartDetail() {
 
   let increaseKg = (itemId) => {
     let cartService = new CartService();
-    cartService.increaseKg(1, itemId).then((result) => {
+    cartService.increaseKg(user.id, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,

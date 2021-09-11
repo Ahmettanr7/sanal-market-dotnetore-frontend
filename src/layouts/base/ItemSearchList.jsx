@@ -12,6 +12,8 @@ import ItemService from "../../services/ItemService";
 import {MdAddShoppingCart} from "react-icons/md";
 import CartService from "../../services/CartService";
 import { useToasts } from "react-toast-notifications";
+import UserService from "../../services/UserService";
+import LocalStorageService from "../../services/LocalStorageService";
 
 export default function ItemSearchList() {
   const { addToast } = useToasts();
@@ -19,6 +21,16 @@ export default function ItemSearchList() {
 
   const [items, setItems] = useState([]);
   const [totalItem,setTotalItem] = useState([])
+  const [user, setuser] = useState({});
+
+  useEffect(() => {
+    let userService = new UserService();
+    let localStorageServie = new LocalStorageService();
+    userService
+      .getByEmail(localStorageServie.get("email"))
+      .then((result) => setuser(result.data.data));
+  }, []);
+
   let itemService = new ItemService();
   useEffect(() => {
     itemService
@@ -54,7 +66,7 @@ export default function ItemSearchList() {
   let addToCart = (itemId) => {
     let cartService = new CartService();
     const values = {
-      userId: 1,
+      userId: (user.id),
       itemId: itemId,
       count: count,
     };

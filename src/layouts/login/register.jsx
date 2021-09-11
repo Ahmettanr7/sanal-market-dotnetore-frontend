@@ -22,10 +22,13 @@ export class Register extends React.Component {
               <label htmlFor="username">Kullanıcı Adı</label>
               <input type="text" name="username" placeholder="Kullanıcı Adı" />
             </div>
-            <div className="form-group">
+            <Form.Group className="form-group"
+            onChange="handleChange"
+            value="values.email"
+            >
               <label htmlFor="email">Email</label>
               <input type="text" name="email" placeholder="Email" />
-            </div>
+            </Form.Group>
             <div className="form-group">
               <label htmlFor="password">Parola</label>
               <input type="password" name="password" placeholder="Parola" />

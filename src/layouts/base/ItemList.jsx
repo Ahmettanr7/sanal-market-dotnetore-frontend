@@ -13,6 +13,8 @@ import CategoryService from "../../services/CategoryService";
 import { MdAddShoppingCart } from "react-icons/md";
 import CartService from "../../services/CartService";
 import { useToasts } from "react-toast-notifications";
+import UserService from "../../services/UserService";
+import LocalStorageService from "../../services/LocalStorageService";
 
 export default function ItemList() {
   const { addToast } = useToasts();
@@ -21,6 +23,15 @@ export default function ItemList() {
   const [items, setItems] = useState([]);
   const [totalItem, setTotalItem] = useState([]);
   const [cat, setCat] = useState({});
+  const [user, setuser] = useState({});
+
+  useEffect(() => {
+    let userService = new UserService();
+    let localStorageServie = new LocalStorageService();
+    userService
+      .getByEmail(localStorageServie.get("email"))
+      .then((result) => setuser(result.data.data));
+  }, []);
 
   useEffect(() => {
     let itemService = new ItemService();
@@ -63,7 +74,7 @@ export default function ItemList() {
   let addToCart = (itemId) => {
     let cartService = new CartService();
     const values = {
-      userId: 1,
+      userId: (user.id),
       itemId: itemId,
       count: count,
     };

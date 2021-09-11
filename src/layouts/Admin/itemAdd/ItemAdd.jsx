@@ -17,27 +17,27 @@ export default function ItemAdd(){
   }, []);
 
   let itemService = new ItemService();
-  const formik = useFormik({
-    initialValues: {
-      itemCode: "",
-      itemName: "",
-      unitPrice: "",
-      category1: "",
-      category2: "",
-      category3: "",
-      category4: "",
-      brand: "",
-    },
-    onSubmit: (values) => {
-      itemService.add(values).then((result) =>
-        addToast(result.data.message, {
-          appearance: result.data.success ? "success" : "error",
-          autoDismiss: false,
-        })
-      );
-      console.log(values);
-    },
-  });
+    const formik = useFormik({
+      initialValues: {
+        itemCode: "",
+        itemName: "",
+        unitPrice: null,
+        category1: null,
+        category2: "",
+        category3: "",
+        category4: "",
+        brand: "",
+      },
+      onSubmit: (values) => {
+        itemService.add(values).then((result) =>
+          addToast(result.data.message, {
+            appearance: result.data.success ? "success" : "error",
+            autoDismiss: false,
+          })
+        );
+        console.log(values);
+      },
+    });
 
   return (
     <div>
@@ -96,7 +96,7 @@ export default function ItemAdd(){
                   id="category1"
                   value={formik.values.category1}
                 >
-                  <option>Temel Kategori Seçiniz</option>
+                  {/* <option>Temel Kategori Seçiniz</option> */}
                   {categories.map((category, index) => (
                     <option key={index} value={category.id}>
                       {category.categoryName}

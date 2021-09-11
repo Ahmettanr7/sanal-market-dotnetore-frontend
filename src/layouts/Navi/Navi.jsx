@@ -26,25 +26,37 @@ import SignedIn from "./SignedIn";
 import SignOut from "./SignOut";
 import { useToasts } from "react-toast-notifications";
 import ItemService from "../../services/ItemService";
+import AuthService from "../../services/AuthService";
+import UserService from "../../services/UserService";
+import LocalStorageService from "../../services/LocalStorageService";
 
 export default function Navi() {
   const { addToast } = useToasts();
   const [cartItems, setCartItems] = useState([]);
   const [totalCartPrice, setTotalCartPrice] = useState([]);
+  const [user, setUser] = useState({});
+  const [userId, setuserId] = useState(1);
+  useEffect(() => {
+    let userService = new UserService();
+    let localStorageService = new LocalStorageService();
+    userService
+      .getByEmail(localStorageService.get("email"))
+      .then((result) => setUser(result.data.data));
+  }, []);
 
   useEffect(() => {
     let cartService = new CartService();
       cartService
-      .getTotalCartPrice(1)
+      .getTotalCartPrice(user.id)
       .then((result) => setTotalCartPrice(result.data.data));
-  }, [totalCartPrice]);
-  
+  }, [user,totalCartPrice]);
+
   useEffect(() => {
     let cartService = new CartService();
     cartService
-      .getByUserIdAndCartStatusIsTrue(1)
+      .getByUserIdAndCartStatusIsTrue(user.id)
       .then((result) => setCartItems(result.data.data));
-  }, [cartItems]);
+  }, [user,cartItems]);
 
   const formik = useFormik({
     initialValues: {
@@ -71,7 +83,7 @@ export default function Navi() {
 
   let decreaseAd = (itemId) => {
     let cartService = new CartService();
-    cartService.decreaseAd(1, itemId).then((result) => {
+    cartService.decreaseAd(user.id, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -81,7 +93,7 @@ export default function Navi() {
 
   let increaseAd = (itemId) => {
     let cartService = new CartService();
-    cartService.increaseAd(1, itemId).then((result) => {
+    cartService.increaseAd(user.id, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -91,7 +103,7 @@ export default function Navi() {
 
   let decreaseKg = (itemId) => {
     let cartService = new CartService();
-    cartService.decreaseKg(1, itemId).then((result) => {
+    cartService.decreaseKg(user.id, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -101,7 +113,7 @@ export default function Navi() {
 
   let increaseKg = (itemId) => {
     let cartService = new CartService();
-    cartService.increaseKg(1, itemId).then((result) => {
+    cartService.increaseKg(user.id, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -109,22 +121,19 @@ export default function Navi() {
     });
   };
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   const history = useHistory();
-
-  function handlerSignOut() {
-    setIsAuthenticated(false);
-    history.push("/");
-  }
-
-  function handlerSignIn() {
-    setIsAuthenticated(true);
-  }
 
   function roll(value, step) {
     step = Math.pow(10, step);
     return Math.round(value * step) / step;
+  }
+  let authService = new AuthService();
+  function checkToLogin() {
+    if (authService.isAuthenticated()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   return (
@@ -164,18 +173,13 @@ export default function Navi() {
             </Form>
           </Formik>
 
-            {/* Giriş ve Kayıt Olma */}
+          {/* Giriş ve Kayıt Olma */}
 
           <Navbar.Collapse id="navbarScroll" className="justify-content-end">
-            {isAuthenticated ? (
-              <SignedIn signOut={handlerSignOut} />
-            ) : (
-              <SignOut signIn={handlerSignIn} />
-            )}
+            {checkToLogin() ? <SignedIn /> : <SignOut />}
 
+            {/* Sipariş Listesi 'SEPET' */}
 
-              {/* Sipariş Listesi 'SEPET' */}
-              
             <Nav.Item>
               <Button className="m-3" variant="light" onClick={handleShow}>
                 <TiShoppingCart size="30px" color="#666666" />
@@ -304,21 +308,29 @@ export default function Navi() {
                     </div>
                   )}
                   {totalCartPrice &&
-                  (totalCartPrice?.totalCartPrice < 49.99 ? (
-                    <div className="d-flex justify-content-center">
-                    <span className="text-muted">Minimum sepet tutarı <span className="text-purple">50 ₺</span>'dir. <br/> Sipariş verebilmek için sepetinize <span className="text-purple"> {roll(50-totalCartPrice?.totalCartPrice, 2)} ₺ </span> lik daha ürün eklemeniz gerekmektedir</span> 
-                    </div>
-                  )
-                :
-                (
-                  <div className="d-flex justify-content-center">
-                      <Button as={NavLink} to="/cart" onClick={handleClose}>
-                        Alışverişi Tamamla
-                      </Button>
-                    </div>
-                )
-                  )
-              }
+                    (totalCartPrice?.totalCartPrice < 49.99 ? (
+                      <div className="d-flex justify-content-center">
+                        <span className="text-muted">
+                          Minimum sepet tutarı{" "}
+                          <span className="text-purple">50 ₺</span>'dir. <br />{" "}
+                          Sipariş verebilmek için sepetinize{" "}
+                          <span className="text-purple">
+                            {" "}
+                            {roll(
+                              50 - totalCartPrice?.totalCartPrice,
+                              2
+                            )} ₺{" "}
+                          </span>{" "}
+                          lik daha ürün eklemeniz gerekmektedir
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="d-flex justify-content-center">
+                        <Button as={NavLink} to="/cart" onClick={handleClose}>
+                          Alışverişi Tamamla
+                        </Button>
+                      </div>
+                    ))}
                 </Offcanvas.Body>
               </Offcanvas>
             </Nav.Item>
