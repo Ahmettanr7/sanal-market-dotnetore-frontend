@@ -25,7 +25,6 @@ import { NavLink, useHistory } from "react-router-dom";
 import SignedIn from "./SignedIn";
 import SignOut from "./SignOut";
 import { useToasts } from "react-toast-notifications";
-import ItemService from "../../services/ItemService";
 import AuthService from "../../services/AuthService";
 import UserService from "../../services/UserService";
 import LocalStorageService from "../../services/LocalStorageService";
@@ -35,28 +34,39 @@ export default function Navi() {
   const [cartItems, setCartItems] = useState([]);
   const [totalCartPrice, setTotalCartPrice] = useState([]);
   const [user, setUser] = useState({});
-  const [userId, setuserId] = useState(1);
+  let localStorageService = new LocalStorageService();
+
+  const [userId, setUserId] = useState(1);
+
   useEffect(() => {
     let userService = new UserService();
     let localStorageService = new LocalStorageService();
     userService
       .getByEmail(localStorageService.get("email"))
-      .then((result) => setUser(result.data.data));
-  }, []);
-
-  useEffect(() => {
-    let cartService = new CartService();
-      cartService
-      .getTotalCartPrice(user.id)
-      .then((result) => setTotalCartPrice(result.data.data));
-  }, [user,totalCartPrice]);
+      .then((result) => setUser(result.data.data))
+      .then(FsetUserId());
+  }, [user]);
+  function FsetUserId() {
+    if (!localStorageService.getToken()) {
+      return setUserId(1);
+    } else {
+      return setUserId(user.id);
+    }
+  }
 
   useEffect(() => {
     let cartService = new CartService();
     cartService
-      .getByUserIdAndCartStatusIsTrue(user.id)
+      .getTotalCartPrice(userId)
+      .then((result) => setTotalCartPrice(result.data.data));
+  }, [user, totalCartPrice]);
+
+  useEffect(() => {
+    let cartService = new CartService();
+    cartService
+      .getByUserIdAndCartStatusIsTrue(userId)
       .then((result) => setCartItems(result.data.data));
-  }, [user,cartItems]);
+  }, [user, cartItems]);
 
   const formik = useFormik({
     initialValues: {
@@ -83,7 +93,7 @@ export default function Navi() {
 
   let decreaseAd = (itemId) => {
     let cartService = new CartService();
-    cartService.decreaseAd(user.id, itemId).then((result) => {
+    cartService.decreaseAd(userId, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -93,7 +103,7 @@ export default function Navi() {
 
   let increaseAd = (itemId) => {
     let cartService = new CartService();
-    cartService.increaseAd(user.id, itemId).then((result) => {
+    cartService.increaseAd(userId, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -103,7 +113,7 @@ export default function Navi() {
 
   let decreaseKg = (itemId) => {
     let cartService = new CartService();
-    cartService.decreaseKg(user.id, itemId).then((result) => {
+    cartService.decreaseKg(userId, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
@@ -113,15 +123,13 @@ export default function Navi() {
 
   let increaseKg = (itemId) => {
     let cartService = new CartService();
-    cartService.increaseKg(user.id, itemId).then((result) => {
+    cartService.increaseKg(userId, itemId).then((result) => {
       addToast(result.data.message, {
         appearance: result.data.success ? "success" : "error",
         autoDismiss: true,
       });
     });
   };
-
-  const history = useHistory();
 
   function roll(value, step) {
     step = Math.pow(10, step);
@@ -179,161 +187,164 @@ export default function Navi() {
             {checkToLogin() ? <SignedIn /> : <SignOut />}
 
             {/* Sipariş Listesi 'SEPET' */}
-
-            <Nav.Item>
-              <Button className="m-3" variant="light" onClick={handleShow}>
-                <TiShoppingCart size="30px" color="#666666" />
-                <span className="mx-2">
-                  Sipariş Listesi
-                  <span className="m-2" style={{ color: "#1d398d" }}>
-                    <b>{cartItems.length}</b>
+            {localStorageService.getToken() && (
+              <Nav.Item>
+                <Button className="m-3" variant="light" onClick={handleShow}>
+                  <TiShoppingCart size="30px" color="#666666" />
+                  <span className="mx-2">
+                    Sipariş Listesi
+                    <span className="m-2" style={{ color: "#1d398d" }}>
+                      <b>{cartItems.length}</b>
+                    </span>
+                    <AiFillLeftCircle className="ms-2" color="#666666" />
                   </span>
-                  <AiFillLeftCircle className="ms-2" color="#666666" />
-                </span>
-              </Button>
-              <Offcanvas placement="end" show={show} onHide={handleClose}>
-                <Offcanvas.Header closeButton>
-                  <Offcanvas.Title>
-                    <TiShoppingCart
-                      className="m-2"
-                      size="40px"
-                      color="#666666"
-                    />
-                    Sipariş Listem
-                  </Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                  {totalCartPrice ? (
-                    <ListGroup>
-                      {cartItems.map((cart, index) => (
-                        <ListGroup.Item action key={index}>
-                          <div className="d-flex justify-content-end">
-                            <Buttonn onClick={() => delete_(cart.id)}>
-                              x
-                            </Buttonn>
-                          </div>
-                          <div className="d-flex justify-content-center">
-                            {cart.imageUrl ? (
-                              <Image
-                                style={{ height: "50px" }}
-                                src={cart.imageUrl}
-                              />
-                            ) : (
-                              <Image
-                                style={{ height: "50px" }}
-                                src="https://davutsahin.net/wp-content/uploads/2020/10/gorsel-hazirlaniyor-600x400-1-375x195.png"
-                              />
-                            )}
-                          </div>
-                          <div className="d-flex justify-content-center">
-                            {cart.itemName}
-                          </div>
-                          <div className="d-flex justify-content-center">
-                            <span style={{ fontSize: "small", width: "100%" }}>
-                              Birim Fiyatı :{" "}
-                              <span>
-                                <b>{roll(cart.unitPrice, 2)} ₺</b>
+                </Button>
+                <Offcanvas placement="end" show={show} onHide={handleClose}>
+                  <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>
+                      <TiShoppingCart
+                        className="m-2"
+                        size="40px"
+                        color="#666666"
+                      />
+                      Sipariş Listem
+                    </Offcanvas.Title>
+                  </Offcanvas.Header>
+                  <Offcanvas.Body>
+                    {totalCartPrice ? (
+                      <ListGroup>
+                        {cartItems.map((cart, index) => (
+                          <ListGroup.Item action key={index}>
+                            <div className="d-flex justify-content-end">
+                              <Buttonn onClick={() => delete_(cart.id)}>
+                                x
+                              </Buttonn>
+                            </div>
+                            <div className="d-flex justify-content-center">
+                              {cart.imageUrl ? (
+                                <Image
+                                  style={{ height: "50px" }}
+                                  src={cart.imageUrl}
+                                />
+                              ) : (
+                                <Image
+                                  style={{ height: "50px" }}
+                                  src="https://davutsahin.net/wp-content/uploads/2020/10/gorsel-hazirlaniyor-600x400-1-375x195.png"
+                                />
+                              )}
+                            </div>
+                            <div className="d-flex justify-content-center">
+                              {cart.itemName}
+                            </div>
+                            <div className="d-flex justify-content-center w-100">
+                              <span
+                                style={{ fontSize: "small", width: "100%" }}
+                              >
+                                Birim Fiyatı :{" "}
+                                <span>
+                                  <b>{roll(cart.unitPrice, 2)} ₺</b>
+                                </span>
                               </span>
-                            </span>
-                            <AddRemove>
-                              <FlexContainer>
-                                <Flex className="border">
-                                  {cart.category1 === 2 ||
-                                  cart.category1 === 6 ||
-                                  cart.category1 === 12 ||
-                                  cart.category1 === 18 ? (
-                                    <Buttonn
-                                      onClick={() => decreaseKg(cart.itemId)}
-                                      disabled={cart.count === 1}
-                                    >
-                                      -
-                                    </Buttonn>
-                                  ) : (
-                                    <Buttonn
-                                      onClick={() => decreaseAd(cart.itemId)}
-                                      disabled={cart.count === 1}
-                                    >
-                                      -
-                                    </Buttonn>
-                                  )}
-                                  {cart.category1 === 2 ||
-                                  cart.category1 === 6 ||
-                                  cart.category1 === 12 ||
-                                  cart.category1 === 18 ? (
-                                    <Buttonn>{cart.count} Kilo</Buttonn>
-                                  ) : (
-                                    <Buttonn>{cart.count} Adet</Buttonn>
-                                  )}
-                                  {cart.category1 === 2 ||
-                                  cart.category1 === 6 ||
-                                  cart.category1 === 12 ||
-                                  cart.category1 === 18 ? (
-                                    <Buttonn
-                                      onClick={() => increaseKg(cart.itemId)}
-                                    >
-                                      +
-                                    </Buttonn>
-                                  ) : (
-                                    <Buttonn
-                                      onClick={() => increaseAd(cart.itemId)}
-                                    >
-                                      +
-                                    </Buttonn>
-                                  )}
-                                </Flex>
-                              </FlexContainer>
-                            </AddRemove>
-                            =
-                            <span className="ms-1">
-                              <b>{roll(cart.lineTotal, 2)} ₺ </b>
-                            </span>
-                          </div>
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
-                  ) : (
-                    <div className="d-flex justify-content-center">
-                      <h6>Sepetinizde ürün bulunmamaktadır.</h6>
-                    </div>
-                  )}
-                  {totalCartPrice && (
-                    <div className="d-flex justify-content-center">
-                      <span className="m-5">
-                        Toplam :{" "}
-                        <span style={{ color: "blue" }}>
-                          {" "}
-                          {roll(totalCartPrice?.totalCartPrice, 2)} ₺
-                        </span>
-                      </span>
-                    </div>
-                  )}
-                  {totalCartPrice &&
-                    (totalCartPrice?.totalCartPrice < 49.99 ? (
-                      <div className="d-flex justify-content-center">
-                        <span className="text-muted">
-                          Minimum sepet tutarı{" "}
-                          <span className="text-purple">50 ₺</span>'dir. <br />{" "}
-                          Sipariş verebilmek için sepetinize{" "}
-                          <span className="text-purple">
-                            {" "}
-                            {roll(
-                              50 - totalCartPrice?.totalCartPrice,
-                              2
-                            )} ₺{" "}
-                          </span>{" "}
-                          lik daha ürün eklemeniz gerekmektedir
-                        </span>
-                      </div>
+                              <AddRemove>
+                                <FlexContainer>
+                                  <Flex className="border">
+                                    {cart.category1 === 2 ||
+                                    cart.category1 === 6 ||
+                                    cart.category1 === 12 ||
+                                    cart.category1 === 18 ? (
+                                      <Buttonn
+                                        onClick={() => decreaseKg(cart.itemId)}
+                                        disabled={cart.count === 1}
+                                      >
+                                        -
+                                      </Buttonn>
+                                    ) : (
+                                      <Buttonn
+                                        onClick={() => decreaseAd(cart.itemId)}
+                                        disabled={cart.count === 1}
+                                      >
+                                        -
+                                      </Buttonn>
+                                    )}
+                                    {cart.category1 === 2 ||
+                                    cart.category1 === 6 ||
+                                    cart.category1 === 12 ||
+                                    cart.category1 === 18 ? (
+                                      <Buttonn>{cart.count} Kilo</Buttonn>
+                                    ) : (
+                                      <Buttonn>{cart.count} Adet</Buttonn>
+                                    )}
+                                    {cart.category1 === 2 ||
+                                    cart.category1 === 6 ||
+                                    cart.category1 === 12 ||
+                                    cart.category1 === 18 ? (
+                                      <Buttonn
+                                        onClick={() => increaseKg(cart.itemId)}
+                                      >
+                                        +
+                                      </Buttonn>
+                                    ) : (
+                                      <Buttonn
+                                        onClick={() => increaseAd(cart.itemId)}
+                                      >
+                                        +
+                                      </Buttonn>
+                                    )}
+                                  </Flex>
+                                </FlexContainer>
+                              </AddRemove>
+                              =
+                              <span className="ms-2 w-50">
+                                <b>{roll(cart.lineTotal, 2)} ₺ </b>
+                              </span>
+                            </div>
+                          </ListGroup.Item>
+                        ))}
+                      </ListGroup>
                     ) : (
                       <div className="d-flex justify-content-center">
-                        <Button as={NavLink} to="/cart" onClick={handleClose}>
-                          Alışverişi Tamamla
-                        </Button>
+                        <h6>Sepetinizde ürün bulunmamaktadır.</h6>
                       </div>
-                    ))}
-                </Offcanvas.Body>
-              </Offcanvas>
-            </Nav.Item>
+                    )}
+                    {totalCartPrice && (
+                      <div className="d-flex justify-content-center">
+                        <span className="m-5">
+                          Toplam :{" "}
+                          <span style={{ color: "blue" }}>
+                            {" "}
+                            {roll(totalCartPrice?.totalCartPrice, 2)} ₺
+                          </span>
+                        </span>
+                      </div>
+                    )}
+                    {totalCartPrice &&
+                      (totalCartPrice?.totalCartPrice < 49.99 ? (
+                        <div className="d-flex justify-content-center">
+                          <span className="text-muted">
+                            Minimum sepet tutarı{" "}
+                            <span className="text-purple">50 ₺</span>'dir.{" "}
+                            <br /> Sipariş verebilmek için sepetinize{" "}
+                            <span className="text-purple">
+                              {" "}
+                              {roll(
+                                50 - totalCartPrice?.totalCartPrice,
+                                2
+                              )} ₺{" "}
+                            </span>{" "}
+                            lik daha ürün eklemeniz gerekmektedir
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="d-flex justify-content-center">
+                          <Button as={NavLink} to="/cart" onClick={handleClose}>
+                            Alışverişi Tamamla
+                          </Button>
+                        </div>
+                      ))}
+                  </Offcanvas.Body>
+                </Offcanvas>
+              </Nav.Item>
+            )}
           </Navbar.Collapse>
         </Navbar>
       </Container>

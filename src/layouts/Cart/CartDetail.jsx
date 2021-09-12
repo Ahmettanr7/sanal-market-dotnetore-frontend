@@ -18,7 +18,7 @@ export default function CartDetail() {
     userService
       .getByEmail(localStorageService.get("email"))
       .then((result) => setUser(result.data.data));
-  }, {user});
+  }, []);
 
   useEffect(() => {
     let cartService = new CartService();

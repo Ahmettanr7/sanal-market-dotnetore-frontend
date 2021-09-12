@@ -21,8 +21,8 @@ export default function ItemAdd(){
       initialValues: {
         itemCode: "",
         itemName: "",
-        unitPrice: null,
-        category1: null,
+        unitPrice: "",
+        category1: "",
         category2: "",
         category3: "",
         category4: "",

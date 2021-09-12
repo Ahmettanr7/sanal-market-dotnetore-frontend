@@ -24,7 +24,7 @@ export default function Address() {
     userService
       .getByEmail(localStorageService.get("email"))
       .then((result) => setUser(result.data.data));
-  }, {user});
+  }, []);
 
   useEffect(() => {
     let addressService = new AddressService();
@@ -52,52 +52,53 @@ export default function Address() {
     cartService
       .getTotalCartPrice(user.id)
       .then((result) => setTotalCartPrice(result.data.data));
-  }, [totalCartPrice]);
+  }, [user, totalCartPrice]);
 
   let addressService = new AddressService();
   const formik = useFormik({
     initialValues: {
-      userId: "",
+      userId: 1,
       countryId: 1,
       cityId: 42,
       townId: 732,
       districtId: 22147,
       postalCode: "",
-      addressText: "",
+      addressText: ""
     },
     onSubmit: (values) => {
-      values.userId = user.id;
+      values.userId = JSON.stringify(user.id);
+
       addressService.addAddress(values).then((result) =>
         addToast(result.data.message, {
           appearance: result.data.success ? "success" : "error",
           autoDismiss: true,
-        })
-      );
+        }
+        )
+      )
+      console.log(values);
     },
   });
 
   const formik2 = useFormik({
     initialValues: {
-      id: "",
+      id: ""
     },
   });
 
   let orderService = new OrderService();
   const formik3 = useFormik({
     initialValues: {
-      userId: user.id,
+      userId: "",
       addressId: "",
     },
     onSubmit: (values) => {
+      values.userId = user.id;
       values.addressId = formik2.values.id;
       orderService.add(values).then((result) =>
         addToast(result.data.message, {
           appearance: result.data.success ? "success" : "error",
           autoDismiss: true,
-        })
-        (result.data.success &&  
-          window.location.assign("/")
-        )
+        })(result.data.success && window.location.assign("/"))
       );
     },
   });
@@ -160,7 +161,7 @@ export default function Address() {
             id="countryId"
             value={formik.values.countryId}
           >
-            {countries.map((country, index) => (
+            {countries.map((country,index) => (
               <option value={country.id} key={index}>
                 {country.countryName}
               </option>
@@ -173,7 +174,7 @@ export default function Address() {
             id="cityId"
             value={formik.values.cityId}
           >
-            {cities.map((city, index) => (
+            {cities.map((city,index) => (
               <option value={city.id} key={index}>
                 {city.cityName}
               </option>
@@ -241,7 +242,7 @@ export default function Address() {
         </Form>
       </Formik>
 
-      <div>
+      {/* <div>
         <h4 className="p-3 text-purple">SİPARİŞ ÖZETİ</h4>
         <Form.Label>Sipariş Adresi</Form.Label>
         <Form.Select value={formik2.values.id}>
@@ -266,7 +267,7 @@ export default function Address() {
             </span>
           )}
         </div>
-      </div>
+      </div> */}
       <div className="d-flex justify-content-end p-4">
         <Formik>
           <Form onSubmit={formik3.handleSubmit}>

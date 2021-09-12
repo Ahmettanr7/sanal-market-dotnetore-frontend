@@ -21,7 +21,8 @@ export default function SignedIn() {
 
   let localStorageService = new LocalStorageService();
   function logOut(){
-    localStorageService.clean()
+    localStorageService.remove("token");
+    localStorageService.remove("email");
      addToast("Başarıyla çıkış yapıldı", {
             appearance: "success",
             autoDismiss: true,

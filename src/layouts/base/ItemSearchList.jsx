@@ -63,8 +63,15 @@ export default function ItemSearchList() {
   const addKg = () => setCount(count + 0.5);
   const removeKg = () => setCount(count - 0.5);
 
+  let localStorageService = new LocalStorageService();
   let addToCart = (itemId) => {
-    let cartService = new CartService();
+    if (!localStorageService.getToken()) {
+      addToast("Alışverişe başlamak için hesabınızı açmanız gereklidir ! Giriş yap hemen alışverişe başla ", {
+        appearance: "error",
+        autoDismiss: false,
+      });
+    }else{
+      let cartService = new CartService();
     const values = {
       userId: (user.id),
       itemId: itemId,
@@ -76,6 +83,7 @@ export default function ItemSearchList() {
         autoDismiss: true,
       });
     });
+    }
   };
   return (
     <div>
