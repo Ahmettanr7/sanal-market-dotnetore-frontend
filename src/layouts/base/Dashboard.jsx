@@ -1,13 +1,13 @@
 import React from "react";
 import Navi from "../Navi/Navi";
 import { Route } from "react-router-dom";
-import Background from "./Background";
 import Footer from "./Footer";
 import AdminPage from "../../pages/admin/AdminPage";
 import FirstPage from "../../pages/base/FirstPage";
 import ItemListPage from "../../pages/base/ItemListPage";
-import LoginRegister from "../../pages/LoginRegister/LoginRegister";
 import CartPage from "../../pages/base/CartPage";
+import Register from "../Register/Register";
+import Login from "../Login/Login";
 
 export default function Dashboard() {
   return (
@@ -17,10 +17,12 @@ export default function Dashboard() {
       <Route exact path="/items/:id" component={Navi} />
       <Route exact path="/cart" component={Navi} />
       <Route exact path="/login" component={Navi} />
+      <Route exact path="/register" component={Navi} />
 
       <Route exact path="/" component={FirstPage} />
 
-      <Route exact path="/login" component={LoginRegister} />
+      <Route exact path="/login" component={Login} />
+      <Route exact path="/register" component={Register} />
 
       <Route exact path="/cart" component={CartPage} />
 

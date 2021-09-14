@@ -3,18 +3,16 @@ import React from "react";
 import AuthService from "../../services/AuthService";
 import LocalStorageService from "../../services/LocalStorageService";
 import loginImg from "../../assets/login.svg";
+import { useToasts } from "react-toast-notifications";
+export default function Register() {
 
-export class Register extends React.Component {
-
-  
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
+    const { addToast } = useToasts();
 
     return (
-      <div className="base-container" ref={this.props.containerRef}>
+      <div className="bigBox">
+      <div className="box">
+        <div className="container">
+        <div className="base-container mt-5">
         <div className="header">Kayıt Ol</div>
         <div className="content">
         <div className="image">
@@ -28,12 +26,19 @@ export class Register extends React.Component {
               authService.register(values)
               .then(
                 (result) =>
-                  localStorageService.set("token", result.data.data.token),
-                  localStorageService.set("email", values.email)
-                  // setTimeout(function(){localStorageService.getToken() &&
-                  //    localStorageService.set("email", values.email); }, 300)
-              )
-              .then(
+                  localStorageService.set("token", result.data.data.token) ,
+                  setTimeout(function () {
+                      localStorageService.set("email", values.email);
+                  }, 100) &&
+                  (localStorageService.getToken() && addToast("Kayıt İşlemi Başarılı. Giriş Yapıldı", {
+                    appearance: "success",
+                    autoDismiss: true,
+                })),
+                    addToast("Doğrulama hatası. Verilerinizi kontrol ederek tekrar deneyiniz.", {
+                               appearance: "error",
+                               autoDismiss: true,
+                           })
+                ).then(
                  setTimeout(function(){localStorageService.getToken() && window.location.assign("/"); }, 300)
               )
                 ;
@@ -61,6 +66,8 @@ export class Register extends React.Component {
           </Formik>
         </div>
       </div>
-    );
-  }
+      </div>
+      </div>
+      </div>
+    )
 }

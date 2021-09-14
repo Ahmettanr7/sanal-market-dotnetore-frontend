@@ -57,7 +57,7 @@ export default function Address() {
   let addressService = new AddressService();
   const formik = useFormik({
     initialValues: {
-      userId: 1,
+      userId: "",
       countryId: 1,
       cityId: 42,
       townId: 732,
@@ -66,8 +66,7 @@ export default function Address() {
       addressText: ""
     },
     onSubmit: (values) => {
-      values.userId = JSON.stringify(user.id);
-
+      values.userId = user.id
       addressService.addAddress(values).then((result) =>
         addToast(result.data.message, {
           appearance: result.data.success ? "success" : "error",
@@ -75,7 +74,6 @@ export default function Address() {
         }
         )
       )
-      console.log(values);
     },
   });
 
@@ -93,13 +91,14 @@ export default function Address() {
     },
     onSubmit: (values) => {
       values.userId = user.id;
-      values.addressId = formik2.values.id;
+      values.addressId = values.addressId *1;
       orderService.add(values).then((result) =>
         addToast(result.data.message, {
           appearance: result.data.success ? "success" : "error",
           autoDismiss: true,
         })(result.data.success && window.location.assign("/"))
       );
+      console.log(values)
     },
   });
 
@@ -242,7 +241,7 @@ export default function Address() {
         </Form>
       </Formik>
 
-      {/* <div>
+      <div>
         <h4 className="p-3 text-purple">SİPARİŞ ÖZETİ</h4>
         <Form.Label>Sipariş Adresi</Form.Label>
         <Form.Select value={formik2.values.id}>
@@ -267,7 +266,7 @@ export default function Address() {
             </span>
           )}
         </div>
-      </div> */}
+      </div>
       <div className="d-flex justify-content-end p-4">
         <Formik>
           <Form onSubmit={formik3.handleSubmit}>

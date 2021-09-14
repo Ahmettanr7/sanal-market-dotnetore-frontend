@@ -1,17 +1,18 @@
 import { Formik, Form, Field } from "formik";
 import React from "react";
-import { Button } from "react-bootstrap";
 import loginImg from "../../assets/login.svg";
 import AuthService from "../../services/AuthService";
 import LocalStorageService from "../../services/LocalStorageService";
-export class Login extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+import { useToasts } from "react-toast-notifications";
+export default function Login() {
 
-  render() {
+    const { addToast } = useToasts();
+
     return (
-      <div className="base-container" ref={this.props.containerRef}>
+      <div className="bigBox">
+      <div className="box">
+        <div className="container">
+        <div className="base-container">
         <div className="header">Giriş Yap</div>
         <div className="content">
           <div className="image">
@@ -39,11 +40,19 @@ export class Login extends React.Component {
                 .login(values)
                 .then(
                   (result) =>
-                    localStorageService.set("token", result.data.data.token),
+                    localStorageService.set("token", result.data.data.token) ,
                   setTimeout(function () {
                     localStorageService.getToken() &&
                       localStorageService.set("email", values.email);
-                  }, 100)
+                  }, 100) && (localStorageService.getToken() && addToast("Giriş Yapıldı", {
+                    appearance: "success",
+                    autoDismiss: true,
+                }))
+                 ,
+                    addToast("Doğrulama hatası. Verilerinizi kontrol ederek tekrar deneyiniz.", {
+                               appearance: "error",
+                               autoDismiss: true,
+                           })
                 )
                 .then(
                   values.rememberMe != 0
@@ -127,6 +136,8 @@ export class Login extends React.Component {
           </Formik>
         </div>
       </div>
-    );
-  }
+      </div>
+      </div>
+      </div>
+    )
 }

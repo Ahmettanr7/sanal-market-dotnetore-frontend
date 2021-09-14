@@ -15,7 +15,6 @@ import CartService from "../../services/CartService";
 import { useToasts } from "react-toast-notifications";
 import UserService from "../../services/UserService";
 import LocalStorageService from "../../services/LocalStorageService";
-
 export default function ItemList() {
   const { addToast } = useToasts();
   let { id } = useParams();

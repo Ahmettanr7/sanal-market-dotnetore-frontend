@@ -11,6 +11,7 @@ export default function ItemAdd(){
 
   const [categories, setCategories] = useState([]);
 
+  const [createdItemId,setItemId] = useState();
   useEffect(() => {
     let categoryService = new CategoryService();
     categoryService.getAll().then((result) => setCategories(result.data.data));
@@ -29,13 +30,37 @@ export default function ItemAdd(){
         brand: "",
       },
       onSubmit: (values) => {
+        values.category1 = values.category1 *1;
+        values.unitPrice = values.unitPrice *1;
+        console.log(values)
         itemService.add(values).then((result) =>
           addToast(result.data.message, {
             appearance: result.data.success ? "success" : "error",
             autoDismiss: false,
-          })
+          },
+          setItemId(result.data.message))
+          
+        )
+      },
+    });
+  
+    const formik2 = useFormik({
+      initialValues: {
+        itemId: "",
+        multipartFile: [],
+      },
+      onSubmit: (values) => {
+          const data = new FormData();
+          values.itemId = createdItemId *1;
+         values.multipartFile = data.append("multipartFile",values.multipartFile[0]);
+        itemService.imageUpload(values.itemId,data).then((result) =>
+          addToast(result.data, {
+            appearance: result.status="200" ? "success" : "error",
+            autoDismiss: true,
+          }),
+          console.log(values)
         );
-        console.log(values);
+        
       },
     });
 
@@ -163,7 +188,48 @@ export default function ItemAdd(){
           </Formik>
         </Col>
         <Col sm={4}>
-          <ImageAdd/>
+        <Formik>
+            <Form
+              onSubmit={formik2.handleSubmit}
+              style={{ paddingTop: "20px" }}
+            >
+              <Form.Group
+                onChange={formik2.handleChange}
+                onBlur={formik2.handleBlur}
+                value={formik2.values.itemId}
+                className="mb-3"
+              >
+                <Form.Label>Ürün Id Numarası</Form.Label> <br />
+                <Form.Text className="text-dark">
+                  <p>
+                    Ürünü ekledikten sonra sol üst köşede yazan ID numarasını
+                    alt kutuya yazınız.!
+                  </p>
+                </Form.Text>
+                <Form.Control
+                  type="number"
+                  placeholder="Ürün Id Numarası"
+                  id="itemId"
+                />
+              </Form.Group>
+              <Form.Group
+                onChange={(event) => {
+                    const files = event.target.files;
+                    let myFiles =Array.from(files);
+                    formik2.setFieldValue("multipartFile", myFiles);
+                  }}
+                onBlur={formik2.handleBlur}
+                value={formik2.values.multipartFile}
+                className="mb-3"
+              >
+                <Form.Label>Resim Seç</Form.Label>
+                <Form.Control type="file" id="multipartFile" />
+              </Form.Group>
+              <Button type="submit" variant="success">
+                Resim Yükle
+              </Button>
+            </Form>
+          </Formik>
         </Col>
       </Row>
     </div>
