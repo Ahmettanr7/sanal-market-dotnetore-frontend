@@ -15,6 +15,7 @@ export default function AdminItemSearchList() {
 
   const [items, setItems] = useState([]);
   const [totalItem, setTotalItem] = useState([]);
+  const [itemId, setItemId] = useState();
 
   let itemService = new ItemService();
   useEffect(() => {
@@ -31,16 +32,17 @@ export default function AdminItemSearchList() {
   const formik2 = useFormik({
     initialValues: {
       itemId: "",
-      multipartFile: [],
+      file: [],
     },
     onSubmit: (values) => {
-      const data = new FormData();
-      data.append("multipartFile", values.multipartFile[0]);
-      itemService.imageUpload(values.itemId, data).then((result) =>
-        addToast(result.data, {
-          appearance: (result.status = "200" ? "success" : "error"),
+      values.itemId = itemId*1;
+        const data = new FormData();
+       values.file = data.append("file",values.file[0]);
+      itemService.imageUpload(values.itemId*1,data).then((result) =>
+        addToast(result.data.message, {
+          appearance: result.data.success ? "success" : "error",
           autoDismiss: true,
-        })
+        }),
       );
     },
   });
@@ -126,30 +128,23 @@ export default function AdminItemSearchList() {
               </Card.Title>
               <Formik>
                 <Form onSubmit={formik2.handleSubmit}>
-                  <Form.Group
-                   onChange={formik2.handleChange}
-                    onBlur={formik2.handleBlur}
-                    value={formik2.values.itemId}
-                    className="mb-3"
-                  >
-                    <Form.Control
-                      type="number"
-                      placeholder="Ürün Id Numarası"
-                      id="itemId"
-                      defaultValue={item.id}
-                    />
-                  </Form.Group>
+                {itemId == item.id ? 
+                (<Button variant="danger" className="m-3">Seçilen</Button>):
+                (<Button className="m-3" onClick={() => setItemId(item.id)}>Seç</Button>)
+                }
+                  
+
                   <Form.Group
                     onChange={(event) => {
                       const files = event.target.files;
                       let myFiles = Array.from(files);
-                      formik2.setFieldValue("multipartFile", myFiles);
+                      formik2.setFieldValue("file", myFiles);
                     }}
                     onBlur={formik2.handleBlur}
-                    value={formik2.values.multipartFile}
+                    value={formik2.values.file}
                     className="mb-3"
                   >
-                    <Form.Control type="file" id="multipartFile" />
+                    <Form.Control type="file" id="file" />
                   </Form.Group>
                   <Button type="submit" variant="success" className="w-100">
                     <RiImageAddFill />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FloatingLabel, Form, Button, Col, Row } from "react-bootstrap";
+import { FloatingLabel, Form, Button, Col, Row, Container } from "react-bootstrap";
 import { Formik, useFormik } from "formik";
 import { useToasts } from "react-toast-notifications";
 import ItemService from "../../../services/ItemService";
@@ -11,7 +11,7 @@ export default function ItemAdd(){
 
   const [categories, setCategories] = useState([]);
 
-  const [createdItemId,setItemId] = useState();
+  const [itemId, setItemId] = useState();
   useEffect(() => {
     let categoryService = new CategoryService();
     categoryService.getAll().then((result) => setCategories(result.data.data));
@@ -34,12 +34,11 @@ export default function ItemAdd(){
         values.unitPrice = values.unitPrice *1;
         console.log(values)
         itemService.add(values).then((result) =>
-          addToast(result.data.message, {
+          addToast(result.data.success && "Ürün Ekleme İşlemi Başarılı. Resim Yükleyebilirsiniz", {
             appearance: result.data.success ? "success" : "error",
             autoDismiss: false,
           },
-          setItemId(result.data.message))
-          
+          setItemId(result.data.message*1))
         )
       },
     });
@@ -47,18 +46,17 @@ export default function ItemAdd(){
     const formik2 = useFormik({
       initialValues: {
         itemId: "",
-        multipartFile: [],
+        file: [],
       },
       onSubmit: (values) => {
+        values.itemId = itemId*1;
           const data = new FormData();
-          values.itemId = createdItemId *1;
-         values.multipartFile = data.append("multipartFile",values.multipartFile[0]);
-        itemService.imageUpload(values.itemId,data).then((result) =>
-          addToast(result.data, {
-            appearance: result.status="200" ? "success" : "error",
+         values.file = data.append("file",values.file[0]);
+        itemService.imageUpload(values.itemId*1,data).then((result) =>
+          addToast(result.data.message, {
+            appearance: result.data.success ? "success" : "error",
             autoDismiss: true,
           }),
-          console.log(values)
         );
         
       },
@@ -66,8 +64,6 @@ export default function ItemAdd(){
 
   return (
     <div>
-      <Row>
-        <Col sm={8}>
           <Formik>
             <Form
               onSubmit={formik.handleSubmit}
@@ -186,52 +182,32 @@ export default function ItemAdd(){
               </Button>
             </Form>
           </Formik>
-        </Col>
-        <Col sm={4}>
         <Formik>
             <Form
               onSubmit={formik2.handleSubmit}
               style={{ paddingTop: "20px" }}
             >
-              <Form.Group
-                onChange={formik2.handleChange}
-                onBlur={formik2.handleBlur}
-                value={formik2.values.itemId}
-                className="mb-3"
-              >
-                <Form.Label>Ürün Id Numarası</Form.Label> <br />
-                <Form.Text className="text-dark">
-                  <p>
-                    Ürünü ekledikten sonra sol üst köşede yazan ID numarasını
-                    alt kutuya yazınız.!
-                  </p>
-                </Form.Text>
-                <Form.Control
-                  type="number"
-                  placeholder="Ürün Id Numarası"
-                  id="itemId"
-                />
-              </Form.Group>
+              <Container>
               <Form.Group
                 onChange={(event) => {
                     const files = event.target.files;
                     let myFiles =Array.from(files);
-                    formik2.setFieldValue("multipartFile", myFiles);
+                    formik2.setFieldValue("file", myFiles);
                   }}
                 onBlur={formik2.handleBlur}
-                value={formik2.values.multipartFile}
+                value={formik2.values.file}
                 className="mb-3"
               >
+                <Form.Text>Resimi ürünü ekledikten sonra yükleyiniz!</Form.Text> <br/>
                 <Form.Label>Resim Seç</Form.Label>
-                <Form.Control type="file" id="multipartFile" />
+                <Form.Control className="mx-5"  type="file" id="file" />
               </Form.Group>
-              <Button type="submit" variant="success">
+              </Container>
+              <Button className="mb-5" type="submit" variant="success">
                 Resim Yükle
               </Button>
             </Form>
           </Formik>
-        </Col>
-      </Row>
     </div>
   );
 }

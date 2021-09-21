@@ -91,14 +91,14 @@ export default function Address() {
     },
     onSubmit: (values) => {
       values.userId = user.id;
-      values.addressId = values.addressId *1;
+      values.addressId = formik2.values.id*1;
       orderService.add(values).then((result) =>
         addToast(result.data.message, {
           appearance: result.data.success ? "success" : "error",
           autoDismiss: true,
-        })(result.data.success && window.location.assign("/"))
+        })
+        (result.data.success && window.location.assign("/"))
       );
-      console.log(values)
     },
   });
 

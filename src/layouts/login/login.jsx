@@ -67,7 +67,7 @@ export default function Login() {
                 )
                 .then(
                   setTimeout(function () {
-                    localStorageService.getToken() &&
+                    localStorageService.getToken() && localStorageService.get("email") &&
                       window.location.assign("/");
                   }, 100)
                 );

@@ -40,6 +40,9 @@ export default function SignedIn() {
               {user.firstName} {user.lastName}
           </Dropdown.Toggle>
           <Dropdown.Menu>
+          <Dropdown.Item as={NavLink} to="/order-history" className="justify-content-end">
+            Sipariş Geçmişi
+            </Dropdown.Item>
             <Dropdown.Item as={NavLink} to="/asd" className="justify-content-end">
             Bilgilerim  
             </Dropdown.Item>

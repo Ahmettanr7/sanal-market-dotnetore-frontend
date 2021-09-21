@@ -13,9 +13,9 @@ export default class ItemService{
         return axios.get("https://localhost:44320/api/items/getbyid?id="+id)
     }
 
-    imageUpload(image){
-        return axios.post("https://localhost:44320/api/images/add",image)
-        // return axios.post(`https://localhost:44320/api/images/add?itemId=${itemId}`,multipartFile)
+    imageUpload(itemId,file){
+        // return axios.post("https://localhost:44320/api/images/add",image)
+        return axios.post(`https://localhost:44320/api/images/upload?itemId=${itemId}`,file)
     }
 
     getByCategory(cat1Id,pageNo,pageSize){

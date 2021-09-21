@@ -44,7 +44,7 @@ export default function CategoryList() {
   const handleShow = () => setShow(true);
 
   return (
-    <div style={{ border: "2px solid #1d398d", borderRadius: "10px" }}>
+    <div>
       <Button className="w-100 mb-2 mt-1" variant="outline">
         Kategoriler
       </Button>

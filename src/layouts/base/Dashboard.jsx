@@ -8,6 +8,7 @@ import ItemListPage from "../../pages/base/ItemListPage";
 import CartPage from "../../pages/base/CartPage";
 import Register from "../Register/Register";
 import Login from "../Login/Login";
+import OrderHistoryPage from "../../pages/base/OrderHistoryPage";
 
 export default function Dashboard() {
   return (
@@ -18,6 +19,8 @@ export default function Dashboard() {
       <Route exact path="/cart" component={Navi} />
       <Route exact path="/login" component={Navi} />
       <Route exact path="/register" component={Navi} />
+      <Route exact path="/order-history" component={Navi} />
+      <Route exact path="/order-history/order-detail/:orderId" component={Navi} />
 
       <Route exact path="/" component={FirstPage} />
 
@@ -38,6 +41,9 @@ export default function Dashboard() {
 
       <Route exact path="/items/:id" component={ItemListPage} />
       <Route exact path="/search/:itemName" component={ItemListPage} />
+
+      <Route exact path="/order-history" component={OrderHistoryPage} />
+      <Route exact path="/order-history/order-detail/:orderId" component={OrderHistoryPage} />
 
       
       <Route exact path="/" component={Footer} />

@@ -16,15 +16,13 @@ export default function ImageAdd(){
     },
     onSubmit: (values) => {
         const data = new FormData();
-       values.multipartFile = data.append("multipartFile",values.multipartFile[0]);
+        data.append("multipartFile",values.multipartFile[0]);
       itemService.imageUpload(values.itemId,data).then((result) =>
         addToast(result.data, {
-          appearance: result.status="200" ? "success" : "error",
+          appearance: result.data.success ? "success" : "error",
           autoDismiss: true,
-        }),
-        console.log(values)
+        })
       );
-      
     },
   });
 

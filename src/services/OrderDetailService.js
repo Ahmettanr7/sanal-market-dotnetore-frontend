@@ -21,4 +21,8 @@ export default class OrderDetailService{
     getByIsDeliveredIsFalse(){
         return axios.get("https://localhost:44320/api/orderdetails/getbyisdeliveredisfalse")
     }
+
+    getOrderHistoryByUserId(userId){
+        return axios.get("https://localhost:44320/api/orderdetails/getorderhistorybyuserid?userId="+userId)
+    }
 }
