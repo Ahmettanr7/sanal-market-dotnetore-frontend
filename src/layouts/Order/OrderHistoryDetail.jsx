@@ -15,6 +15,10 @@ export default function OrderHistoryDetail() {
         .then((result) => setOrderDetail(result.data.data));
     }, []);
 
+    function roll(value, step) {
+      step = Math.pow(10, step);
+      return Math.round(value * step) / step;
+    }
     return (
         <div>
             <Table
@@ -37,7 +41,7 @@ export default function OrderHistoryDetail() {
       <td>{order.itemCode}</td>
       <td>{order.brand}</td>
       <td>{order.itemName}</td>
-      <td>{order.unitPrice}</td>
+      <td>{roll(order.unitPrice,2)} ₺</td>
       <td>{order.count}</td>
     </tr>
   ))}
